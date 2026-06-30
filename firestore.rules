@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 뉴스레터 구독자: 누구나 생성(create)만 가능하고, 조회/수정/삭제는 일절 차단 (이메일 리스트 유출 방지)
+    match /newsletter_subscribers/{email} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // 후원 결제 내역: 누구나 생성(create)만 가능하고, 조회/수정/삭제는 일절 차단 (결제자 목록 및 금액 정보 보호)
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // 그 외 기타 모든 컬렉션은 기본적으로 전면 차단
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
