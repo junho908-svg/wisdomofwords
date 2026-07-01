@@ -754,12 +754,10 @@ export default function App() {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => setIsBankModalOpen(true)}
-                  className="w-full py-[14px] px-6 rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:scale-[1.01] active:scale-[0.99] bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919]"
+                  className="w-full py-[14px] px-6 rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:scale-[1.01] active:scale-[0.99] bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.723 1.698 5.105 4.195 6.471-.233.842-1.042 3.197-1.127 3.493-.105.37.114.364.298.24 1.576-1.066 3.734-2.585 5.132-3.642.493.076 1.002.115 1.502.115 5.523 0 10-3.477 10-7.75S17.523 3 12 3z" />
-                  </svg>
-                  카카오페이 / 계좌이체 후원
+                  <span>🕊️</span>
+                  공식 후원하기 (카드/간편결제)
                 </button>
                 <PayPalCheckoutButton
                   product={PRODUCTS[0]}
