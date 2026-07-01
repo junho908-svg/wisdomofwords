@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createOrder } from '../../lib/firestore';
 
 const SuccessPage: React.FC = () => {
   const [params, setParams] = useState({
@@ -35,23 +34,30 @@ const SuccessPage: React.FC = () => {
 
     if (orderId && amountStr) {
       setSaveStatus('saving');
-      // 토스 결제 완료 기록을 Firestore DB에 안전하게 기록
-      createOrder({
-        id: orderId,
-        userId: 'anonymous', // 비로그인 후원자
-        productId: 'toss-support',
-        productName: 'Toss Payments Support',
-        amount: parseFloat(amountStr),
-        currency: 'KRW',
-        status: 'completed',
-        tossPaymentKey: paymentKey,
+      
+      // 토스 결제 승인 API 호출 (Cloud Functions 백엔드)
+      fetch('https://us-central1-wisdom-of-words-site-a88df.cloudfunctions.net/confirmTossPayment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId,
+          amount: amountStr,
+          paymentKey,
+        }),
       })
-        .then(() => {
-          console.log('[Firestore] Toss order saved:', orderId);
-          setSaveStatus('saved');
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok && data.success) {
+            console.log('[Toss] Payment Confirmed:', data);
+            setSaveStatus('saved');
+          } else {
+            throw new Error(data.error?.message || 'Payment failed');
+          }
         })
         .catch((err) => {
-          console.error('[Firestore] Failed to save Toss order:', err);
+          console.error('[Toss] Failed to confirm payment:', err);
           setSaveStatus('failed');
         });
     }

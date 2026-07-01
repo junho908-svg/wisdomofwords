@@ -10,11 +10,10 @@ import {
 import { Navbar } from './components/Navbar';
 import { ScrambleIn } from './components/ScrambleText';
 import PayPalCheckoutButton from './components/payment/PayPalCheckoutButton';
-import TossCheckoutButton from './components/payment/TossCheckoutButton';
+import { BankTransferModal } from './components/payment/BankTransferModal';
 import { useAuth } from './contexts/AuthContext';
 import { createOrder, subscribeNewsletter } from './lib/firestore';
 import { PRODUCTS } from './lib/paypal';
-import { TOSS_PRODUCTS } from './lib/toss';
 import { VIDEO_URLS } from './config/videos';
 import { SITE_CONFIG } from './config/content';
 import SuccessPage from './components/payment/SuccessPage';
@@ -22,6 +21,7 @@ import FailPage from './components/payment/FailPage';
 
 export default function App() {
   const [entranceComplete, setEntranceComplete] = useState(false);
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false);
   const { user } = useAuth();
 
   // 뉴스레터 구독 상태 관리
@@ -191,6 +191,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: '"Noto Sans KR", sans-serif' }}>
       <Navbar entranceComplete={entranceComplete} />
+      <BankTransferModal isOpen={isBankModalOpen} onClose={() => setIsBankModalOpen(false)} />
 
       {/* ════════════════ SECTION 1: HERO ════════════════ */}
       <section className="relative h-screen h-[100dvh] flex flex-col overflow-hidden">
@@ -719,14 +720,19 @@ export default function App() {
                 </li>
               </ul>
               <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => setIsBankModalOpen(true)}
+                  className="w-full py-[14px] px-6 rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:scale-[1.01] active:scale-[0.99] bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919]"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.723 1.698 5.105 4.195 6.471-.233.842-1.042 3.197-1.127 3.493-.105.37.114.364.298.24 1.576-1.066 3.734-2.585 5.132-3.642.493.076 1.002.115 1.502.115 5.523 0 10-3.477 10-7.75S17.523 3 12 3z" />
+                  </svg>
+                  카카오페이 / 계좌이체 후원
+                </button>
                 <PayPalCheckoutButton
                   product={PRODUCTS[0]}
                   onSuccess={(details) => handlePayPalSuccess(details, PRODUCTS[0].id, PRODUCTS[0].name, PRODUCTS[0].price)}
                   onError={(err) => console.error('PayPal error:', err)}
-                />
-                <TossCheckoutButton
-                  product={TOSS_PRODUCTS[0]}
-                  onError={(err) => console.error('Toss error:', err)}
                 />
               </div>
             </motion.div>
