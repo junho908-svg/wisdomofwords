@@ -49,6 +49,13 @@ export const onNewSubscriber = onDocumentCreated(
             <br/>
             <p>풍성한 은혜와 지혜가 가득한 하루 되시기를 바랍니다.</p>
             <p>감사합니다.</p>
+            
+            <div style="text-align: center; margin: 30px 0 20px 0;">
+              <a href="https://wisdom-of-words-site-a88df.web.app/prayer" target="_blank" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #dd6b20, #ed8936); color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(221, 107, 32, 0.2);">
+                Step 3. 나의 기도제목 나누러 가기 🙏 ↗
+              </a>
+            </div>
+            
             <p style="color: #A0AEC0; font-size: 12px; margin-top: 40px;">- 말씀의지혜 팀 드림 -</p>
           </div>
         `,

@@ -557,19 +557,30 @@ export default function App() {
             transition={{ duration: 1.2, delay: 0.4 }}
             viewport={{ once: true, amount: 0.4 }}
           >
-            {architecture.layers.map((l) => (
-              <div
-                key={l.num}
-                className="w-full max-w-md h-[72px] bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-between px-6 hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] transition-all duration-300 shadow-md group"
-              >
-                <span className="text-amber-200/70 text-[13px] tracking-[0.15em] font-bold uppercase group-hover:text-amber-200 transition-colors duration-300">
-                  STEP 0{l.num}
-                </span>
-                <span className="text-white text-[16px] sm:text-[18px] font-semibold tracking-tight">
-                  {l.name}
-                </span>
-              </div>
-            ))}
+            {architecture.layers.map((l) => {
+              const isPrayerStep = l.num === 3;
+              const Component = isPrayerStep ? 'a' : 'div';
+              const extraProps = isPrayerStep ? { href: '/prayer' } : {};
+              
+              return (
+                <Component
+                  key={l.num}
+                  {...extraProps}
+                  className={`w-full max-w-md h-[72px] bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-between px-6 hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] transition-all duration-300 shadow-md group ${
+                    isPrayerStep ? 'cursor-pointer border-amber-400/30 hover:border-amber-400/60' : ''
+                  }`}
+                >
+                  <span className={`text-[13px] tracking-[0.15em] font-bold uppercase group-hover:text-amber-200 transition-colors duration-300 ${
+                    isPrayerStep ? 'text-amber-300' : 'text-amber-200/70'
+                  }`}>
+                    STEP 0{l.num} {isPrayerStep && '↗'}
+                  </span>
+                  <span className="text-white text-[16px] sm:text-[18px] font-semibold tracking-tight">
+                    {l.name}
+                  </span>
+                </Component>
+              );
+            })}
 
             {/* 실제 구독 폼 */}
             <form
@@ -594,9 +605,19 @@ export default function App() {
             </form>
 
             {message && (
-              <p className={`text-[14px] font-medium tracking-tight mt-2 ${message.includes('완료') ? 'text-amber-200' : 'text-rose-400'}`}>
-                {message}
-              </p>
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <p className={`text-[14px] font-medium tracking-tight ${message.includes('완료') ? 'text-amber-200' : 'text-rose-400'}`}>
+                  {message}
+                </p>
+                {message.includes('완료') && (
+                  <a 
+                    href="/prayer"
+                    className="inline-flex items-center gap-1.5 px-5 py-2 mt-2 text-xs font-bold text-black bg-amber-200 hover:bg-amber-100 rounded-full transition-all shadow-md active:scale-95"
+                  >
+                    3단계. 기도제목 나누기 참여하기 🕊️ ↗
+                  </a>
+                )}
+              </div>
             )}
           </motion.div>
         </div>
