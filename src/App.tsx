@@ -20,11 +20,15 @@ import SuccessPage from './components/payment/SuccessPage';
 import FailPage from './components/payment/FailPage';
 
 import AdminNewsletter from './pages/AdminNewsletter';
+import PrayerShare from './pages/PrayerShare';
 
 export default function App() {
   // Simple routing for admin page
   if (window.location.pathname === '/admin/newsletter') {
     return <AdminNewsletter />;
+  }
+  if (window.location.pathname === '/prayer') {
+    return <PrayerShare />;
   }
 
   const [entranceComplete, setEntranceComplete] = useState(false);

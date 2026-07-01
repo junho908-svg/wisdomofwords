@@ -12,6 +12,12 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if false;
     }
+
+    // 기도제목 나눔: 누구나 생성(create)만 가능하고, 조회/수정/삭제는 일절 차단 (개인 정보 보호)
+    match /prayer_requests/{docId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
     
     // 그 외 기타 모든 컬렉션은 기본적으로 전면 차단
     match /{document=**} {

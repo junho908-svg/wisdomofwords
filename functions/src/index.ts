@@ -1,4 +1,5 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
 import * as nodemailer from "nodemailer";
 
@@ -137,6 +138,14 @@ export const sendMassNewsletter = onCall(async (request) => {
 
     await Promise.all(sendPromises);
 
+    // 발송 이력(history)에 기록 저장
+    await admin.firestore().collection("newsletter_history").add({
+      subject: subject,
+      sentAt: admin.firestore.FieldValue.serverTimestamp(),
+      recipientCount: successCount,
+      success: true
+    });
+
     return { 
       success: true, 
       message: `총 ${emails.length}명 중 ${successCount}명에게 발송 성공, ${failCount}명 실패`,
@@ -203,5 +212,265 @@ export const deleteSubscriber = onCall(async (request) => {
   } catch (error) {
     console.error("Delete subscriber error:", error);
     throw new HttpsError("internal", "구독자 삭제에 실패했습니다.");
+  }
+});
+
+/**
+ * 예약 뉴스레터 생성 함수
+ */
+export const createScheduledNewsletter = onCall(async (request) => {
+  const { password, subject, htmlContent, scheduledAt } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  if (!subject || !htmlContent || !scheduledAt) {
+    throw new HttpsError("invalid-argument", "필수 입력 정보가 누락되었습니다.");
+  }
+
+  try {
+    const db = admin.firestore();
+    const res = await db.collection("scheduled_newsletters").add({
+      subject,
+      htmlContent,
+      scheduledAt: admin.firestore.Timestamp.fromDate(new Date(scheduledAt)),
+      sent: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return { success: true, id: res.id };
+  } catch (error) {
+    console.error("Create scheduled newsletter error:", error);
+    throw new HttpsError("internal", "예약 등록에 실패했습니다.");
+  }
+});
+
+/**
+ * 예약 뉴스레터 목록 조회 함수
+ */
+export const getScheduledNewsletters = onCall(async (request) => {
+  const { password } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  try {
+    const db = admin.firestore();
+    const snap = await db.collection("scheduled_newsletters")
+      .where("sent", "==", false)
+      .orderBy("scheduledAt", "asc")
+      .get();
+
+    const list: any[] = [];
+    snap.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        id: doc.id,
+        subject: data.subject,
+        scheduledAt: data.scheduledAt ? data.scheduledAt.toDate().toISOString() : null
+      });
+    });
+
+    return { success: true, list };
+  } catch (error) {
+    console.error("Get scheduled newsletters error:", error);
+    throw new HttpsError("internal", "예약 목록 조회에 실패했습니다.");
+  }
+});
+
+/**
+ * 예약 뉴스레터 삭제(취소) 함수
+ */
+export const deleteScheduledNewsletter = onCall(async (request) => {
+  const { password, id } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  if (!id) {
+    throw new HttpsError("invalid-argument", "삭제할 대상 아이디가 필요합니다.");
+  }
+
+  try {
+    await admin.firestore().collection("scheduled_newsletters").doc(id).delete();
+    return { success: true, message: "예약 취소 완료" };
+  } catch (error) {
+    console.error("Delete scheduled newsletter error:", error);
+    throw new HttpsError("internal", "예약 취소에 실패했습니다.");
+  }
+});
+
+/**
+ * 뉴스레터 발송 이력 조회 함수 (캘린더 렌더링용)
+ */
+export const getNewsletterHistory = onCall(async (request) => {
+  const { password } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  try {
+    const snap = await admin.firestore().collection("newsletter_history")
+      .orderBy("sentAt", "desc")
+      .get();
+
+    const list: any[] = [];
+    snap.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        id: doc.id,
+        subject: data.subject,
+        sentAt: data.sentAt ? data.sentAt.toDate().toISOString() : null,
+        recipientCount: data.recipientCount
+      });
+    });
+
+    return { success: true, list };
+  } catch (error) {
+    console.error("Get newsletter history error:", error);
+    throw new HttpsError("internal", "발송 이력을 가져오는 데 실패했습니다.");
+  }
+});
+
+/**
+ * 기도제목 리스트 조회 함수 (어드민용)
+ */
+export const getPrayerRequests = onCall(async (request) => {
+  const { password } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  try {
+    const snap = await admin.firestore().collection("prayer_requests")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    const list: any[] = [];
+    snap.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        id: doc.id,
+        name: data.name || "익명",
+        content: data.content,
+        shareConsent: data.shareConsent || false,
+        createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : null
+      });
+    });
+
+    return { success: true, list };
+  } catch (error) {
+    console.error("Get prayer requests error:", error);
+    throw new HttpsError("internal", "기도제목 목록 조회에 실패했습니다.");
+  }
+});
+
+/**
+ * 기도제목 삭제 함수
+ */
+export const deletePrayerRequest = onCall(async (request) => {
+  const { password, id } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  if (!id) {
+    throw new HttpsError("invalid-argument", "삭제할 대상 아이디가 필요합니다.");
+  }
+
+  try {
+    await admin.firestore().collection("prayer_requests").doc(id).delete();
+    return { success: true, message: "기도제목 삭제 완료" };
+  } catch (error) {
+    console.error("Delete prayer request error:", error);
+    throw new HttpsError("internal", "기도제목 삭제에 실패했습니다.");
+  }
+});
+
+/**
+ * 구글 스케줄러가 30분마다 자동 실행하여 예약 메일을 발송하는 함수
+ */
+export const checkScheduledEmails = onSchedule("every 30 minutes", async (event) => {
+  const db = admin.firestore();
+  const now = new Date();
+
+  try {
+    // 1. 발송 대상 예약 문서 찾기 (sent == false 이면서 예약시간 <= 현재시간)
+    const querySnapshot = await db.collection("scheduled_newsletters")
+      .where("sent", "==", false)
+      .where("scheduledAt", "<=", admin.firestore.Timestamp.fromDate(now))
+      .get();
+
+    if (querySnapshot.empty) {
+      return;
+    }
+
+    // 2. 전체 구독자 목록 가져오기
+    const subscribersSnap = await db.collection("newsletter_subscribers").get();
+    if (subscribersSnap.empty) {
+      console.log("No subscribers found for scheduled newsletter.");
+      return;
+    }
+
+    const emails: string[] = [];
+    subscribersSnap.forEach((doc) => {
+      const email = doc.data().email;
+      if (email) emails.push(email);
+    });
+
+    // 3. 각 예약 뉴스레터 발송 처리
+    for (const docSnap of querySnapshot.docs) {
+      const newsletterData = docSnap.data();
+      const { subject, htmlContent } = newsletterData;
+
+      let successCount = 0;
+      let failCount = 0;
+
+      const sendPromises = emails.map(async (email) => {
+        const mailOptions = {
+          from: `"말씀의지혜" <${GMAIL_USER}>`,
+          to: email,
+          subject: subject,
+          html: htmlContent,
+        };
+
+        try {
+          await transporter.sendMail(mailOptions);
+          successCount++;
+        } catch (err) {
+          console.error(`Scheduled send failed to ${email}:`, err);
+          failCount++;
+        }
+      });
+
+      await Promise.all(sendPromises);
+
+      // 4. 예약 메일 문서 상태 완료 업데이트
+      await docSnap.ref.update({
+        sent: true,
+        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        recipientCount: successCount
+      });
+
+      // 5. 발송 이력에 기록 추가
+      await db.collection("newsletter_history").add({
+        subject: subject,
+        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        recipientCount: successCount,
+        success: true,
+        isScheduled: true
+      });
+
+      console.log(`[Scheduled Success] "${subject}" 메일 ${successCount}명 발송 완료`);
+    }
+
+  } catch (error) {
+    console.error("Scheduled email check and delivery failed:", error);
   }
 });
