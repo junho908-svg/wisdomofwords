@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, CheckCircle } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface BankTransferModalProps {
   isOpen: boolean;
@@ -9,20 +8,6 @@ interface BankTransferModalProps {
 }
 
 export function BankTransferModal({ isOpen, onClose, title = "말씀의지혜 후원 안내" }: BankTransferModalProps) {
-  const [copied, setCopied] = useState(false);
-
-  // TODO: 실제 정보로 변경 필요
-  const bankInfo = {
-    bankName: "카카오뱅크",
-    accountNumber: "3333-21-0560955",
-    accountHolder: "전준호"
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(bankInfo.accountNumber);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <AnimatePresence>
@@ -81,30 +66,6 @@ export function BankTransferModal({ isOpen, onClose, title = "말씀의지혜 �
                     </svg>
                     모바일 카카오페이 앱 열기
                   </a>
-                </div>
-
-                <div className="relative flex py-2 items-center">
-                  <div className="flex-grow border-t border-zinc-800"></div>
-                  <span className="flex-shrink-0 mx-4 text-zinc-500 text-xs uppercase">또는</span>
-                  <div className="flex-grow border-t border-zinc-800"></div>
-                </div>
-
-                {/* 계좌이체 영역 */}
-                <div className="bg-zinc-800/50 rounded-xl p-4 border border-zinc-700/50">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-zinc-400 text-sm">{bankInfo.bankName}</span>
-                    <span className="text-zinc-400 text-sm">{bankInfo.accountHolder}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white font-mono text-lg tracking-wider">{bankInfo.accountNumber}</span>
-                    <button
-                      onClick={handleCopy}
-                      className="p-2 hover:bg-zinc-700 rounded-lg transition-colors flex items-center gap-1 text-zinc-300"
-                      title="계좌번호 복사"
-                    >
-                      {copied ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Copy className="w-5 h-5" />}
-                    </button>
-                  </div>
                 </div>
               </div>
 
