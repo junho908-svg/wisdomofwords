@@ -19,7 +19,14 @@ import { SITE_CONFIG } from './config/content';
 import SuccessPage from './components/payment/SuccessPage';
 import FailPage from './components/payment/FailPage';
 
+import AdminNewsletter from './pages/AdminNewsletter';
+
 export default function App() {
+  // Simple routing for admin page
+  if (window.location.pathname === '/admin/newsletter') {
+    return <AdminNewsletter />;
+  }
+
   const [entranceComplete, setEntranceComplete] = useState(false);
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
   const { user } = useAuth();
