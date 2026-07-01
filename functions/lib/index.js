@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMassNewsletter = exports.onNewSubscriber = void 0;
+exports.deleteSubscriber = exports.getSubscribersList = exports.sendMassNewsletter = exports.onNewSubscriber = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
 const admin = __importStar(require("firebase-admin"));
 const nodemailer = __importStar(require("nodemailer"));
@@ -162,6 +162,56 @@ exports.sendMassNewsletter = (0, https_1.onCall)(async (request) => {
     catch (error) {
         console.error("Mass email sending error:", error);
         throw new https_1.HttpsError("internal", "메일 발송 중 서버 에러가 발생했습니다.");
+    }
+});
+/**
+ * 구독자 리스트 조회 함수 (어드민용)
+ */
+exports.getSubscribersList = (0, https_1.onCall)(async (request) => {
+    const { password } = request.data;
+    if (password !== "wisdom123") {
+        throw new https_1.HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+    }
+    try {
+        const subscribersSnap = await admin
+            .firestore()
+            .collection("newsletter_subscribers")
+            .orderBy("createdAt", "desc")
+            .get();
+        const list = [];
+        subscribersSnap.forEach((doc) => {
+            const data = doc.data();
+            list.push({
+                id: doc.id,
+                email: data.email,
+                createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : null,
+            });
+        });
+        return { success: true, list };
+    }
+    catch (error) {
+        console.error("Get subscribers error:", error);
+        throw new https_1.HttpsError("internal", "구독자 목록을 가져오는 데 실패했습니다.");
+    }
+});
+/**
+ * 구독자 단일 삭제 함수 (어드민용)
+ */
+exports.deleteSubscriber = (0, https_1.onCall)(async (request) => {
+    const { password, id } = request.data;
+    if (password !== "wisdom123") {
+        throw new https_1.HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+    }
+    if (!id) {
+        throw new https_1.HttpsError("invalid-argument", "삭제할 대상 아이디가 필요합니다.");
+    }
+    try {
+        await admin.firestore().collection("newsletter_subscribers").doc(id).delete();
+        return { success: true, message: "구독자 삭제 완료" };
+    }
+    catch (error) {
+        console.error("Delete subscriber error:", error);
+        throw new https_1.HttpsError("internal", "구독자 삭제에 실패했습니다.");
     }
 });
 //# sourceMappingURL=index.js.map

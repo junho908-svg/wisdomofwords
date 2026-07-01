@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
-import app, { db } from '../lib/firebase'; 
+import app from '../lib/firebase'; 
 
 export default function AdminNewsletter() {
   const [password, setPassword] = useState('');
@@ -19,8 +18,10 @@ export default function AdminNewsletter() {
   const handleCheckPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password === 'wisdom123') {
-      setIsAuthorized(true);
-      await fetchSubscribers();
+      const success = await fetchSubscribers();
+      if (success) {
+        setIsAuthorized(true);
+      }
     } else {
       alert('비밀번호가 틀렸습니다.');
       setIsAuthorized(false);
@@ -30,36 +31,38 @@ export default function AdminNewsletter() {
   const fetchSubscribers = async () => {
     setLoadingSubscribers(true);
     try {
-      const q = query(collection(db, 'newsletter_subscribers'), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const list: any[] = [];
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        // Firestore Timestamp 처리
-        let dateString = '날짜 미상';
-        if (data.createdAt) {
-          if (typeof data.createdAt.toDate === 'function') {
-            dateString = data.createdAt.toDate().toLocaleDateString('ko-KR', {
+      const functions = getFunctions(app);
+      const getSubscribersList = httpsCallable(functions, 'getSubscribersList');
+      const response = await getSubscribersList({ password });
+      
+      const data = response.data as any;
+      if (data.success) {
+        const formattedList = data.list.map((item: any) => {
+          let dateString = '날짜 미상';
+          if (item.createdAt) {
+            const date = new Date(item.createdAt);
+            dateString = date.toLocaleDateString('ko-KR', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit'
             });
-          } else if (data.createdAt instanceof Date) {
-            dateString = data.createdAt.toLocaleDateString();
           }
-        }
-        list.push({
-          id: docSnap.id,
-          email: data.email,
-          createdAt: dateString
+          return {
+            id: item.id,
+            email: item.email,
+            createdAt: dateString
+          };
         });
-      });
-      setSubscribers(list);
-    } catch (error) {
+        setSubscribers(formattedList);
+        return true;
+      }
+      return false;
+    } catch (error: any) {
       console.error("구독자 목록 조회 실패:", error);
-      alert("구독자 목록을 불러오는 도중 오류가 발생했습니다.");
+      alert("구독자 목록을 불러오는 도중 오류가 발생했습니다: " + error.message);
+      return false;
     } finally {
       setLoadingSubscribers(false);
     }
@@ -71,12 +74,18 @@ export default function AdminNewsletter() {
       return;
     }
     try {
-      await deleteDoc(doc(db, 'newsletter_subscribers', id));
-      alert('성공적으로 삭제되었습니다.');
-      await fetchSubscribers(); // 리스트 갱신
-    } catch (error) {
+      const functions = getFunctions(app);
+      const deleteSubscriber = httpsCallable(functions, 'deleteSubscriber');
+      const response = await deleteSubscriber({ password, id });
+      const data = response.data as any;
+      
+      if (data.success) {
+        alert('성공적으로 삭제되었습니다.');
+        await fetchSubscribers(); // 리스트 갱신
+      }
+    } catch (error: any) {
       console.error("구독자 삭제 실패:", error);
-      alert('삭제 중 에러가 발생했습니다.');
+      alert('삭제 중 에러가 발생했습니다: ' + error.message);
     }
   };
 

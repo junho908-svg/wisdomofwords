@@ -148,3 +148,60 @@ export const sendMassNewsletter = onCall(async (request) => {
     throw new HttpsError("internal", "메일 발송 중 서버 에러가 발생했습니다.");
   }
 });
+
+/**
+ * 구독자 리스트 조회 함수 (어드민용)
+ */
+export const getSubscribersList = onCall(async (request) => {
+  const { password } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  try {
+    const subscribersSnap = await admin
+      .firestore()
+      .collection("newsletter_subscribers")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    const list: any[] = [];
+    subscribersSnap.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        id: doc.id,
+        email: data.email,
+        createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : null,
+      });
+    });
+
+    return { success: true, list };
+  } catch (error) {
+    console.error("Get subscribers error:", error);
+    throw new HttpsError("internal", "구독자 목록을 가져오는 데 실패했습니다.");
+  }
+});
+
+/**
+ * 구독자 단일 삭제 함수 (어드민용)
+ */
+export const deleteSubscriber = onCall(async (request) => {
+  const { password, id } = request.data;
+
+  if (password !== "wisdom123") {
+    throw new HttpsError("permission-denied", "잘못된 비밀번호입니다.");
+  }
+
+  if (!id) {
+    throw new HttpsError("invalid-argument", "삭제할 대상 아이디가 필요합니다.");
+  }
+
+  try {
+    await admin.firestore().collection("newsletter_subscribers").doc(id).delete();
+    return { success: true, message: "구독자 삭제 완료" };
+  } catch (error) {
+    console.error("Delete subscriber error:", error);
+    throw new HttpsError("internal", "구독자 삭제에 실패했습니다.");
+  }
+});
