@@ -39,24 +39,65 @@ export const onNewSubscriber = onDocumentCreated(
       const welcomeMailOptions = {
         from: `"말씀의지혜" <${GMAIL_USER}>`,
         to: subscriberEmail,
-        subject: "말씀의지혜 뉴스레터 구독을 환영합니다! 🎉",
+        subject: "🕊️ 말씀의지혜 뉴스레터 구독을 진심으로 환영합니다!",
         html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #4A5568;">구독해 주셔서 감사합니다!</h2>
-            <p>안녕하세요,</p>
-            <p><strong>말씀의지혜</strong> 뉴스레터를 구독해 주셔서 진심으로 감사드립니다.</p>
-            <p>앞으로 새롭게 올라오는 묵상 영상과 다양한 콘텐츠 소식을 가장 먼저 전해드릴 예정입니다.</p>
-            <br/>
-            <p>풍성한 은혜와 지혜가 가득한 하루 되시기를 바랍니다.</p>
-            <p>감사합니다.</p>
-            
-            <div style="text-align: center; margin: 30px 0 20px 0;">
-              <a href="https://wisdom-of-words-site-a88df.web.app/prayer" target="_blank" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #dd6b20, #ed8936); color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(221, 107, 32, 0.2);">
-                Step 3. 나의 기도제목 나누러 가기 🙏 ↗
-              </a>
+          <div style="background-color: #f8f6f2; padding: 40px 20px; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.8;">
+            <div style="max-width: 560px; margin: 0 auto; bg-color: #ffffff; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #eae6df;">
+              
+              <!-- 상단 장식 라인 -->
+              <div style="height: 6px; bg-color: #d97706; background: linear-gradient(90deg, #b45309, #f59e0b);"></div>
+              
+              <!-- 헤더 영역 (로고 스타일링) -->
+              <div style="text-align: center; padding: 35px 20px; border-b: 1px solid #f3ebe1; border-bottom: 1px solid #f3ebe1;">
+                <div style="display: inline-block; width: 44px; height: 44px; line-height: 44px; text-align: center; border-radius: 14px; bg-color: #fef3c7; background: #fef3c7; font-size: 22px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(217,119,6,0.1);">📖</div>
+                <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #1a1a1a; letter-spacing: 1px;">말씀의 지혜</h1>
+                <p style="margin: 4px 0 0 0; font-size: 10px; font-weight: bold; color: #b45309; letter-spacing: 3px; text-transform: uppercase;">Wisdom of Words</p>
+              </div>
+              
+              <!-- 본문 영역 -->
+              <div style="padding: 40px 30px; color: #374151;">
+                <p style="font-size: 16px; margin-top: 0; font-weight: bold; color: #111827;">안녕하세요, 구독자님</p>
+                <p style="font-size: 14px; color: #4b5563;">
+                  바쁜 일상의 걸음을 잠시 멈추고, 하나님의 세밀한 음성에 귀 기울이는 
+                  <strong>'말씀의지혜'</strong> 뉴스레터 가족이 되신 것을 진심으로 환영합니다.
+                </p>
+                <p style="font-size: 14px; color: #4b5563; margin-bottom: 30px;">
+                  매주 보내드리는 정갈한 말씀 한 절과 깊은 묵상 노트를 통해 메마른 일상 속에 잔잔한 평안과 은혜가 흘러가기를 소망합니다.
+                </p>
+                
+                <!-- 구독 혜택 카드 -->
+                <div style="background-color: #faf8f5; border: 1px solid #f1ece4; border-radius: 16px; padding: 22px; margin-bottom: 35px;">
+                  <h3 style="margin: 0 0 15px 0; font-size: 13px; font-weight: bold; color: #b45309; text-transform: uppercase; letter-spacing: 1px;">🎁 뉴스레터 구독 혜택</h3>
+                  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <tr style="vertical-align: top;">
+                      <td style="padding: 6px 0; width: 24px; color: #d97706;">✓</td>
+                      <td style="padding: 6px 0; color: #4b5563;"><strong>매주 월요일 아침:</strong> 한 주를 시작하는 묵상 글 배달</td>
+                    </tr>
+                    <tr style="vertical-align: top;">
+                      <td style="padding: 6px 0; width: 24px; color: #d97706;">✓</td>
+                      <td style="padding: 6px 0; color: #4b5563;"><strong>공동체 중보 기도:</strong> 언제든 고민과 기도제목 나눔 가능</td>
+                    </tr>
+                  </table>
+                </div>
+                
+                <!-- 행동 유도 버튼 -->
+                <div style="text-align: center; margin: 35px 0 10px 0;">
+                  <p style="font-size: 12px; color: #9ca3af; margin-bottom: 12px;">마음의 짐을 내려놓고 함께 기도해요</p>
+                  <a href="https://wisdom-of-words-site-a88df.web.app/prayer" target="_blank" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #b45309, #d97706); color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 50px; box-shadow: 0 6px 20px rgba(217, 119, 6, 0.25); text-align: center;">
+                    나의 기도제목 나누기 🕊️ ↗
+                  </a>
+                </div>
+              </div>
+              
+              <!-- 푸터 영역 -->
+              <div style="background-color: #faf8f5; padding: 30px; text-align: center; border-top: 1px solid #eae6df; font-size: 11px; color: #9ca3af;">
+                <p style="margin: 0 0 6px 0; font-weight: bold; color: #6b7280;">말씀의지혜 공동체</p>
+                <p style="margin: 0 0 15px 0;">본 메일은 수신동의를 하신 분들께만 발송되는 웰컴 메일입니다.</p>
+                <div style="height: 1px; background-color: #e5e7eb; max-width: 100px; margin: 0 auto 15px auto;"></div>
+                <p style="margin: 0;">© 2026 말씀의지혜. All rights reserved.</p>
+              </div>
+              
             </div>
-            
-            <p style="color: #A0AEC0; font-size: 12px; margin-top: 40px;">- 말씀의지혜 팀 드림 -</p>
           </div>
         `,
       };

@@ -9,11 +9,13 @@ import {
 } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { ScrambleIn } from './components/ScrambleText';
+
 import PayPalCheckoutButton from './components/payment/PayPalCheckoutButton';
 import { BankTransferModal } from './components/payment/BankTransferModal';
 import { useAuth } from './contexts/AuthContext';
 import { createOrder, subscribeNewsletter } from './lib/firestore';
 import { PRODUCTS } from './lib/paypal';
+
 import { VIDEO_URLS } from './config/videos';
 import { SITE_CONFIG } from './config/content';
 import SuccessPage from './components/payment/SuccessPage';
@@ -21,6 +23,7 @@ import FailPage from './components/payment/FailPage';
 
 import AdminNewsletter from './pages/AdminNewsletter';
 import PrayerShare from './pages/PrayerShare';
+
 
 export default function App() {
   // Simple routing for admin page
@@ -87,6 +90,8 @@ export default function App() {
     },
     [user]
   );
+
+
 
   /* ── Hero video mouse-scrub ── */
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -527,6 +532,7 @@ export default function App() {
         </div>
       </section>
 
+
       {/* ════════════════ SECTION 5: ARCHITECTURE ════════════════ */}
       <section id="subscribe" className="min-h-screen flex items-center justify-center bg-black">
         <div className="max-w-3xl mx-auto px-6 py-32 text-center">
@@ -561,18 +567,16 @@ export default function App() {
               const isPrayerStep = l.num === 3;
               const Component = isPrayerStep ? 'a' : 'div';
               const extraProps = isPrayerStep ? { href: '/prayer' } : {};
-              
+
               return (
                 <Component
                   key={l.num}
                   {...extraProps}
-                  className={`w-full max-w-md h-[72px] bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-between px-6 hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] transition-all duration-300 shadow-md group ${
-                    isPrayerStep ? 'cursor-pointer border-amber-400/30 hover:border-amber-400/60' : ''
-                  }`}
+                  className={`w-full max-w-md h-[72px] bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-between px-6 hover:bg-white/[0.06] hover:border-white/20 hover:scale-[1.01] transition-all duration-300 shadow-md group ${isPrayerStep ? 'cursor-pointer border-amber-400/30 hover:border-amber-400/60' : ''
+                    }`}
                 >
-                  <span className={`text-[13px] tracking-[0.15em] font-bold uppercase group-hover:text-amber-200 transition-colors duration-300 ${
-                    isPrayerStep ? 'text-amber-300' : 'text-amber-200/70'
-                  }`}>
+                  <span className={`text-[13px] tracking-[0.15em] font-bold uppercase group-hover:text-amber-200 transition-colors duration-300 ${isPrayerStep ? 'text-amber-300' : 'text-amber-200/70'
+                    }`}>
                     STEP 0{l.num} {isPrayerStep && '↗'}
                   </span>
                   <span className="text-white text-[16px] sm:text-[18px] font-semibold tracking-tight">
@@ -610,7 +614,7 @@ export default function App() {
                   {message}
                 </p>
                 {message.includes('완료') && (
-                  <a 
+                  <a
                     href="/prayer"
                     className="inline-flex items-center gap-1.5 px-5 py-2 mt-2 text-xs font-bold text-black bg-amber-200 hover:bg-amber-100 rounded-full transition-all shadow-md active:scale-95"
                   >
@@ -705,7 +709,7 @@ export default function App() {
               <div className="rounded-2xl overflow-hidden border border-amber-200/15 bg-amber-200/[0.02] flex flex-col items-center justify-center p-8 text-center min-h-[220px]">
                 <div className="w-14 h-14 rounded-full bg-amber-200/10 border border-amber-200/20 flex items-center justify-center mb-4">
                   <svg className="w-7 h-7 text-amber-200/60" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </div>
                 <p className="text-white/60 text-[14px] font-medium mb-1">더 많은 말씀 영상 보기</p>
@@ -759,13 +763,15 @@ export default function App() {
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.723 1.698 5.105 4.195 6.471-.233.842-1.042 3.197-1.127 3.493-.105.37.114.364.298.24 1.576-1.066 3.734-2.585 5.132-3.642.493.076 1.002.115 1.502.115 5.523 0 10-3.477 10-7.75S17.523 3 12 3z" />
                   </svg>
-                  카카오페이 간편 후원
+                  카카오페이 / 카카오뱅크 후원
                 </button>
+                <div className="text-zinc-500 text-xs text-center font-bold my-1">OR</div>
                 <PayPalCheckoutButton
                   product={PRODUCTS[0]}
                   onSuccess={(details) => handlePayPalSuccess(details, PRODUCTS[0].id, PRODUCTS[0].name, PRODUCTS[0].price)}
                   onError={(err) => console.error('PayPal error:', err)}
                 />
+
               </div>
             </motion.div>
 
@@ -836,14 +842,14 @@ export default function App() {
                 viewport={{ once: true, amount: 0.3 }}
               >
                 {/* Background Image */}
-                <img 
-                  src="/app-banner.jpg" 
-                  alt="로고몽 가정예배" 
+                <img
+                  src="/app-banner.jpg"
+                  alt="로고몽 가정예배"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Dark Gradient Overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
-                
+
                 {/* Content */}
                 <div className="relative p-8 flex flex-col h-full justify-between z-10">
                   {/* Top Badges */}
@@ -855,7 +861,7 @@ export default function App() {
                       BETA
                     </span>
                   </div>
-                  
+
                   {/* Bottom Content & Button */}
                   <div className="mt-auto">
                     <div className="mb-6">
@@ -885,26 +891,26 @@ export default function App() {
                 viewport={{ once: true, amount: 0.3 }}
               >
                 {/* Background Image */}
-                <img 
-                  src="/praise-banner.png" 
-                  alt="말씀의지혜 찬양 안식처" 
+                <img
+                  src="/praise-banner.png"
+                  alt="말씀의지혜 찬양 안식처"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Light Gradient Overlay just for the bottom button */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
-                
+
                 {/* Content */}
                 <div className="relative p-8 flex flex-col h-full justify-between z-10">
                   {/* Top Badge */}
                   <div>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white shadow-sm">
                       <svg className="w-3.5 h-3.5 text-[#FF0000]" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                       </svg>
                       <span className="text-[11px] font-bold tracking-wider font-sans pt-[1px]">YouTube</span>
                     </span>
                   </div>
-                  
+
                   {/* Bottom Button */}
                   <div className="mt-auto pt-6">
                     <a
@@ -914,7 +920,7 @@ export default function App() {
                       className="inline-flex items-center justify-center gap-2 w-full h-[46px] bg-blue-500 hover:bg-blue-400 backdrop-blur-md border border-blue-400/30 font-bold text-[14px] rounded-xl text-white transition-all duration-300 shadow-lg"
                     >
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                       </svg>
                       채널 방문하기
                     </a>
@@ -952,10 +958,10 @@ export default function App() {
           <div className="md:w-1/2 flex flex-col justify-between p-10 sm:p-16">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <img 
-                  src="/logo-badge.png?v=1" 
-                  alt="말씀의지혜 로고" 
-                  className="w-10 h-10 object-contain rounded-full shrink-0" 
+                <img
+                  src="/logo-badge.png?v=1"
+                  alt="말씀의지혜 로고"
+                  className="w-10 h-10 object-contain rounded-full shrink-0"
                   style={{ mixBlendMode: 'screen' }}
                 />
                 <span className="text-[20px] font-bold text-white tracking-tight">

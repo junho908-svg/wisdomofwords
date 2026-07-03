@@ -39,3 +39,118 @@ body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+/* ───────────── 글래스 ───────────── */
+.glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-hover {
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.glass-hover:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 0 20px 60px -20px rgba(139, 92, 246, 0.4);
+}
+
+/* ───────────── 그라데이션 텍스트 ───────────── */
+.grad-text {
+  background: linear-gradient(110deg, #c4b5fd 0%, #f0abfc 40%, #67e8f9 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ───────────── 버튼 ───────────── */
+.btn-glow {
+  position: relative;
+  background: linear-gradient(110deg, #7c3aed, #d946ef 55%, #06b6d4);
+  background-size: 200% 100%;
+  transition:
+    background-position 0.5s ease,
+    transform 0.15s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.6);
+}
+.btn-glow:hover {
+  background-position: 100% 0;
+  box-shadow: 0 14px 40px -8px rgba(217, 70, 239, 0.7);
+}
+.btn-glow:active {
+  transform: scale(0.98);
+}
+.btn-glow:disabled {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ───────────── 애니메이션 유틸 ───────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* 레이저 스캔 애니메이션 */
+@keyframes laser-scan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+.laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #22d3ee 30%,
+    #e879f9 50%,
+    #22d3ee 70%,
+    transparent
+  );
+  box-shadow:
+    0 0 15px 3px rgba(34, 211, 238, 0.7),
+    0 0 5px 1px rgba(232, 121, 249, 0.5);
+  animation: laser-scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 필름 칩(Color Swatch) 선택 광채 */
+.film-chip-selected {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+  box-shadow: 0 0 15px 3px rgba(34, 211, 238, 0.5);
+}
